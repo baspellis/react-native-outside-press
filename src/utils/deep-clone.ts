@@ -15,6 +15,10 @@ export default function deepClone(children: React.ReactNode, func: () => void) {
         };
       }
 
+      if (typeof child.props.children === 'function') {
+        return child;
+      }
+
       return React.cloneElement(
         child,
         props,
