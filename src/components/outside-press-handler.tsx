@@ -12,13 +12,16 @@ interface IOutsidePressHandlerProps extends ViewProps {
 export default function OutsidePressHandler(props: IOutsidePressHandlerProps) {
   const { children, onOutsidePress, disabled = false } = props;
   const id: string = useRef(Math.random().toString()).current;
-  const { appendEvent, removeEvent, setSkippedEventId } = useEvent();
-  const setSkippedEventIdFunc = () => setSkippedEventId(id);
+  const event = useEvent();
+  if (!event) console.warn('EventContext is not provided');
+  const { appendEvent, removeEvent, setSkippedEventId } = event ?? {};
+
+  const setSkippedEventIdFunc = () => setSkippedEventId?.(id);
 
   useEffect(() => {
-    appendEvent({ id, onOutsidePress, disabled });
+    appendEvent?.({ id, onOutsidePress, disabled });
 
-    return () => removeEvent(id);
+    return () => removeEvent?.(id);
   }, [onOutsidePress, disabled]);
 
   return Platform.select({
